@@ -33,12 +33,19 @@ app.use(session({
 // Protected Test Route
 const  isAuthenticated  = require('./middleware/authMiddleware');
 const isAdmin = require('./middleware/authMiddleware');
+const requireEmail2FA = require('./middleware/2FAMiddleware');
+
+
 app.get('/dashboard', isAuthenticated, (req, res) => {
   res.send(`Welcome ${req.session.username}, your role is ${req.session.role}`);
 });
 
 app.get('/admin', isAuthenticated, isAdmin, (req, res) => {
   res.send("Admin access granted");
+});
+
+app.get("/dashboard", requireEmail2FA, (req, res) => {
+  res.send(`Welcome ${req.session.username}, access granted`);
 });
 app.set('view engine', 'hbs');
 
